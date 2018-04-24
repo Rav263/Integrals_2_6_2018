@@ -63,8 +63,9 @@ void read_file(FILE *file, mem *f1, mem *f2, mem *f3, float *a, float *b){
 
 
 
-int main(void){
-  FILE *file = fopen("data.data", "r");
+int main(int argc, char **args){
+  if(argc < 2)return 1;
+  FILE *file = fopen(args[1], "r");
 
   mem *f1 = (mem *)malloc(1000 * sizeof(mem));
   mem *f2 = (mem *)malloc(1000 * sizeof(mem));
