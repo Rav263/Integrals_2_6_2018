@@ -1,17 +1,23 @@
 %include 'io.inc'
 
 section .data
-  const0 db 2.200000
-  const1 db 3.100000
-  const2 db 1.000000
-  const3 db 10.000000
-  const4 db 5.000000
-  const5 db 3.000000
-  const6 db 3.000000
+  const0 dq 2.200000
+  const1 dq 3.100000
+  const2 dq 1.000000
+  const3 dq 10.000000
+  const4 dq 5.000000
+  const5 dq 3.000000
+  const6 dq 3.000000
 
 section .rodata
-  output db "%f", 10, 0
+  output db "%lf", 10, 0
+  input  db "%lf", 0
 
+
+section .bss
+  a resd 1
+  b resq 1
+ 
 section .text
 global CMAIN
 CMAIN:
@@ -21,30 +27,34 @@ CMAIN:
   and esp, -16
   sub esp, 16
 
-  GET_DEC 4, ebx
+  mov dword[esp], input
+  mov dword[esp + 4], b
+  call scanf
   
   finit
 
-  push ebx
+  push dword[b + 4]
+  push dword[b]
   call f1
-  add esp, 4
+  add esp, 8
 
   mov dword[esp], output
-  fstp dword[esp + 4]
+  fstp qword[esp + 4]
   call printf
 
   call f2
 
   mov dword[esp], output
-  fstp dword[esp + 4]
+  fstp qword[esp + 4]
   call printf
 
-  push ebx
+  push dword[b + 4]
+  push dword[b]
   call f3
-  add esp, 4
+  add esp, 8
 
   mov dword[esp], output
-  fstp dword[esp + 4]
+  fstp qword[esp + 4]
   call printf
 
   xor eax, eax
@@ -55,8 +65,8 @@ CMAIN:
 f1:
   push ebp
   mov ebp, esp
-  fld dword[const2]
-  fld dword[ebp + 8]
+  fld qword[const2]
+  fld qword[ebp + 8]
   faddp
   mov esp, ebp
   pop ebp
@@ -64,10 +74,10 @@ f1:
 f2:
   push ebp
   mov ebp, esp
-  fld dword[const3]
-  fld dword[const4]
+  fld qword[const3]
+  fld qword[const4]
   fsubp
-  fld dword[const5]
+  fld qword[const5]
   faddp
   mov esp, ebp
   pop ebp
@@ -75,9 +85,9 @@ f2:
 f3:
   push ebp
   mov ebp, esp
-  fld dword[ebp + 8]
-  fld dword[const6]
- fdiv
+  fld qword[ebp + 8]
+  fld qword[const6]
+  fdiv
   mov esp, ebp
   pop ebp
   ret
