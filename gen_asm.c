@@ -33,6 +33,59 @@ void bind_section_data(function *f1, function *f2, function *f3, float a, float 
   bind_fun_data(f3, &counter);
 }
 
+void bind_add(){
+  printf("  faddp\n");
+}
+
+void bind_sub(){
+  printf("  fsubp\n");
+}
+
+void bind_div(){
+  printf("  fdiv\n");
+}
+
+void bind_mul(){
+  printf("  fmul\n");
+}
+
+void bind_const(int number){
+  printf("  fld dword[const%d]\n", number);
+}
+
+void bind_varable(){
+  printf("  fld dword[ebp + 8]\n");
+}
+
+void bind_function(function *fun, int counter){
+  printf("f%d:\n", counter);
+  printf("  push ebp\n");
+  printf("  mov ebp, esp\n");
+
+  int const_offset = 0;
+
+  for(int i = 0; fun->fun[i].type != -1; i++){
+    mem now = fun->fun[i];
+    if(now.type == 0){
+      bind_const(fun->const_offset + const_offset);
+      const_offset++;
+    }
+    if(now.type == 1)bind_varable();
+    if(now.type == 2)bind_add();
+    if(now.type == 3)bind_sub();
+    if(now.type == 4)bind_div();
+    if(now.type == 5)bind_mul();
+  }
+
+  printf("  mov esp, ebp\n");
+  printf("  pop ebp\n");
+  printf("  ret\n");
+}
+
+void bind_section_text(){
+  printf("section .text\n");
+}
+
 
 
 int main(int argc, char **args){
@@ -52,7 +105,11 @@ int main(int argc, char **args){
   function fun3 = {f3, 0};
 
   bind_section_data(&fun1, &fun2, &fun3, a, b);
+  bind_section_text();
 
+  bind_function(&fun1, 1);
+  bind_function(&fun2, 2);
+  bind_function(&fun3, 3);
 
   free(f1);
   free(f2);
