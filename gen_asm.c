@@ -2,63 +2,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct mem{
-  float num;
-  int type;
-} mem;
+#include "parse_fun.h"
+
+typedef struct function{
+  mem *fun;
+  int const_offset;
+} function;
 
 
-void read_fun(FILE *file, mem *fun){
-  char str[1000];
-   fgets(str, 1000, file);
+void bind_fun_data(function *f1, int *offset){
+  f1 -> const_offset = *offset;
 
-  int len = strlen(str);
-
-  str[len - 1] = 0;
-  len--;
-  
-  int index = 0;
-
-  for(int i = 0; i < len; i++){
-    char now = str[i];
-    if(now == ' ')continue;
-
-    if(now >= '0' && now <= '9'){
-      float num;
-      sscanf(str + i, "%f", &num);
-
-      fun[index].num  = num;
-      fun[index].type = 0;
-
-      index++;
-
-      for(;i < len; i++){
-        if(str[i] == ' ')break;
-      }
-      continue;
-    }
-
-    if(now == 'x'){
-      fun[index].type = 1;
-      index++;
-    }
+  for(int i = 0; f1->fun[i].type != -1; i++){
+    if(f1->fun[i].type != 0)continue;
+    
+    printf("  const%d db %f\n", *offset, f1->fun[i].num);
+    *offset += 1;
   }
-
-  for(int i = 0; i < index; i++){
-    printf("%f ", fun[i].num);
-  }
-  printf("\n");
 }
 
+void bind_section_data(function *f1, function *f2, function *f3, float a, float b){
+  int counter = 2;
 
-void read_file(FILE *file, mem *f1, mem *f2, mem *f3, float *a, float *b){
-  fscanf(file, "%f %f", a, b);
-  char c;
-  fscanf(file, "%c", &c);
- 
-  read_fun(file, f1);
-  read_fun(file, f2);
-  read_fun(file, f3);
+  printf("section .data\n");
+  printf("  const0 db %f\n", a);
+  printf("  const1 db %f\n", b);
+
+  bind_fun_data(f1, &counter);
+  bind_fun_data(f2, &counter);
+  bind_fun_data(f3, &counter);
 }
 
 
@@ -74,8 +46,12 @@ int main(int argc, char **args){
   float a, b;
 
   read_file(file, f1, f2, f3, &a, &b);
+  
+  function fun1 = {f1, 0};
+  function fun2 = {f2, 0};
+  function fun3 = {f3, 0};
 
-  printf("%f %f\n", a, b);
+  bind_section_data(&fun1, &fun2, &fun3, a, b);
 
 
   free(f1);
