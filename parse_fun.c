@@ -3,7 +3,7 @@
 #include <string.h>
 
 typedef struct mem{
-  float num;
+  double num;
   int type;
 } mem;
 
@@ -42,8 +42,8 @@ void read_fun(FILE *file, mem *fun){
     if(now == ' ')continue;
 
     if(now >= '0' && now <= '9'){
-      float num;
-      sscanf(str + i, "%f", &num);
+      double num;
+      sscanf(str + i, "%lf", &num);
 
       fun[index].num  = num;
       fun[index].type = 0;
@@ -77,8 +77,8 @@ void read_fun(FILE *file, mem *fun){
 }
 
 
-void read_file(FILE *file, mem *f1, mem *f2, mem *f3, float *a, float *b){
-  fscanf(file, "%f %f", a, b);
+void read_file(FILE *file, mem *f1, mem *f2, mem *f3, double *a, double *b){
+  fscanf(file, "%lf %lf", a, b);
   char c;
   fscanf(file, "%c", &c);
  
@@ -90,7 +90,7 @@ void read_file(FILE *file, mem *f1, mem *f2, mem *f3, float *a, float *b){
 
 void print_fun(mem *fun){
   for(int i = 0; fun[i].type != -1; i++){
-    printf("(%d;%f) ", fun[i].type, fun[i].num);
+    printf("(%d;%lf) ", fun[i].type, fun[i].num);
   }
   printf("\n");
 }

@@ -16,17 +16,17 @@ void bind_fun_data(function *f1, int *offset){
   for(int i = 0; f1->fun[i].type != -1; i++){
     if(f1->fun[i].type != 0)continue;
     
-    printf("  const%d db %f\n", *offset, f1->fun[i].num);
+    printf("  const%d dq %lf\n", *offset, f1->fun[i].num);
     *offset += 1;
   }
 }
 
-void bind_section_data(function *f1, function *f2, function *f3, float a, float b){
+void bind_section_data(function *f1, function *f2, function *f3, double a, double b){
   int counter = 2;
 
   printf("section .data\n");
-  printf("  const0 db %f\n", a);
-  printf("  const1 db %f\n", b);
+  printf("  const0 dq %f\n", a);
+  printf("  const1 dq %f\n", b);
 
   bind_fun_data(f1, &counter);
   bind_fun_data(f2, &counter);
@@ -50,11 +50,11 @@ void bind_mul(){
 }
 
 void bind_const(int number){
-  printf("  fld dword[const%d]\n", number);
+  printf("  fld qword[const%d]\n", number);
 }
 
 void bind_varable(){
-  printf("  fld dword[ebp + 8]\n");
+  printf("  fld qword[ebp + 8]\n");
 }
 
 void bind_function(function *fun, int counter){
@@ -73,8 +73,8 @@ void bind_function(function *fun, int counter){
     if(now.type == 1)bind_varable();
     if(now.type == 2)bind_add();
     if(now.type == 3)bind_sub();
-    if(now.type == 4)bind_div();
-    if(now.type == 5)bind_mul();
+    if(now.type == 4)bind_mul();
+    if(now.type == 5)bind_div();
   }
 
   printf("  mov esp, ebp\n");
@@ -96,7 +96,7 @@ int main(int argc, char **args){
   mem *f2 = (mem *)malloc(1000 * sizeof(mem));
   mem *f3 = (mem *)malloc(1000 * sizeof(mem));
 
-  float a, b;
+  double a, b;
 
   read_file(file, f1, f2, f3, &a, &b);
   

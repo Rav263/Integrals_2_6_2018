@@ -2,11 +2,11 @@
 #define PARSE_FUN
 
 typedef struct mem{
-  float num;
+  double num;
   int type;
 } mem;
 
-void read_file(FILE*, mem*, mem*, mem*, float*, float*);
+void read_file(FILE*, mem*, mem*, mem*, double*, double*);
 void print_fun(mem*);
 
 #endif
