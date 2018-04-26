@@ -10,7 +10,7 @@ main: asm
 
 asm: gen_asm
 	./gen_asm ${SPEC_FILE} > functions.asm
-	nasm -g -f elf32 functions.asm -o functions.o -D UNIX
+	nasm -f elf32 functions.asm -o functions.o -D UNIX
 	rm gen_asm
 
 gen_asm: gen_asm.c ${SPEC_FILE} parse_fun bind_commands
@@ -23,5 +23,5 @@ parse_fun: parse_fun.c parse_fun.h
 bind_commands: bind_commands.c bind_commands.h
 	${CXX} ${CXXFLAGS} ${ADDITIONALFLG} bind_commands.c
 
-clear: 
-	rm functioins.asm main
+clean: 
+	rm functions.asm main 
