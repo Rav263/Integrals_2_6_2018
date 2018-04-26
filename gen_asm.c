@@ -66,6 +66,7 @@ void bind_function(function *fun, int counter){
   printf("  mov esp, ebp\n");
   printf("  pop ebp\n");
   printf("  ret\n");
+  printf("\n");
 }
 
 
@@ -91,6 +92,8 @@ int main(int argc, char **args){
   bind_function(&fun1, 1);
   bind_function(&fun2, 2);
   bind_function(&fun3, 3);
+  bind_get_a();
+  bind_get_b();
 
   free(f1);
   free(f2);

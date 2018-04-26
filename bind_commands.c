@@ -54,3 +54,21 @@ void bind_varable(){
 void bind_section_text(){
   printf("section .text\n");
 }
+
+void bind_get_a(){
+  printf("global get_a\n");
+  printf("get_a:\n");
+
+  printf("  fld qword[const0]\n");
+  printf("  ret\n");
+  printf("\n");
+}
+void bind_get_b(){
+  printf("global get_b\n");
+  printf("get_b:\n");
+
+  printf("  fld qword[const1]\n");
+  printf("  ret\n");
+  printf("\n");
+}
+

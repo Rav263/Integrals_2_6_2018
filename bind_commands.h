@@ -14,5 +14,7 @@ void bind_pi();
 void bind_const(int);
 void bind_varable();
 void bind_section_text();
+void bind_get_a();
+void bind_get_b();
 
 #endif
