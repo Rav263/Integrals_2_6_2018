@@ -3,6 +3,8 @@
 #include <string.h>
 
 #include "parse_fun.h"
+#include "bind_commands.h"
+
 
 typedef struct function{
   mem *fun;
@@ -32,55 +34,6 @@ void bind_section_data(function *f1, function *f2, function *f3, double a, doubl
   bind_fun_data(f1, &counter);
   bind_fun_data(f2, &counter);
   bind_fun_data(f3, &counter);
-}
-
-void bind_add(){
-  printf("  faddp\n");
-}
-
-void bind_sub(){
-  printf("  fsubp\n");
-}
-
-void bind_div(){
-  printf("  fdiv\n");
-}
-
-void bind_mul(){
-  printf("  fmul\n");
-}
-
-void bind_sin(){
-  printf("  fsin\n");
-}
-
-void bind_cos(){
-  printf("  fcos\n");
-}
-
-void bind_tan(){
-  printf("  fptan\n");
-}
-
-void bind_ctn(){
-  printf("  fsincos\n");
-  printf("  fdivrp\n");
-}
-
-void bind_pi(){
-  printf("  fldpi\n");
-}
-
-void bind_exp(){
-  printf("  fld qword[constExp]\n"); 
-}
-
-void bind_const(int number){
-  printf("  fld qword[const%d]\n", number);
-}
-
-void bind_varable(){
-  printf("  fld qword[ebp + 8]\n");
 }
 
 void bind_function(function *fun, int counter){
@@ -113,11 +66,6 @@ void bind_function(function *fun, int counter){
   printf("  pop ebp\n");
   printf("  ret\n");
 }
-
-void bind_section_text(){
-  printf("section .text\n");
-}
-
 
 
 int main(int argc, char **args){
