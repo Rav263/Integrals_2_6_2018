@@ -4,11 +4,11 @@ ADDITIONALFLG=-c
 
 all: main
 
-main: asm
-	${CXX} ${CXXFLAGS} main.c -o main
-
+main: asm 
+	${CXX} ${CXXFLAGS} functions.o  main.c -o main -m32
 asm: gen_asm
 	./gen_asm ${SPEC_FILE} > functions.asm
+	nasm -g -f elf32 functions.asm -o functions.o -D UNIX
 	rm gen_asm
 
 gen_asm: gen_asm.c ${SPEC_FILE} parse_fun bind_commands
