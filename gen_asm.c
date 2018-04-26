@@ -37,6 +37,7 @@ void bind_section_data(function *f1, function *f2, function *f3, double a, doubl
 }
 
 void bind_function(function *fun, int counter){
+  printf("global f%d\n", counter);
   printf("f%d:\n", counter);
   printf("  push ebp\n");
   printf("  mov ebp, esp\n");
