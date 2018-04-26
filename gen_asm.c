@@ -27,6 +27,7 @@ void bind_section_data(function *f1, function *f2, function *f3, double a, doubl
   printf("section .data\n");
   printf("  const0 dq %f\n", a);
   printf("  const1 dq %f\n", b);
+  printf("  constE dq 2.718281825\n"); //
 
   bind_fun_data(f1, &counter);
   bind_fun_data(f2, &counter);
@@ -47,6 +48,31 @@ void bind_div(){
 
 void bind_mul(){
   printf("  fmul\n");
+}
+
+void bind_sin(){
+  printf("  fsin\n");
+}
+
+void bind_cos(){
+  printf("  fcos\n");
+}
+
+void bind_tan(){
+  printf("  fptan\n");
+}
+
+void bind_ctn(){
+  printf("  fsincos\n");
+  printf("  fdivrp\n");
+}
+
+void bind_pi(){
+  printf("  fldpi\n");
+}
+
+void bind_exp(){
+  printf("  fld qword[constExp]\n"); 
 }
 
 void bind_const(int number){
@@ -75,6 +101,12 @@ void bind_function(function *fun, int counter){
     if(now.type == 3)bind_sub();
     if(now.type == 4)bind_mul();
     if(now.type == 5)bind_div();
+    if(now.type == 6)bind_sin();
+    if(now.type == 7)bind_tan();
+    if(now.type == 8)bind_ctn();
+    if(now.type == 9)bind_cos();
+    if(now.type == 10)bind_exp();
+    if(now.type == 11)bind_pi();
   }
 
   printf("  mov esp, ebp\n");
