@@ -41,7 +41,7 @@ void bind_pi(){
 }
 
 void bind_exp(){
-  printf("  fld qword[constExp]\n"); 
+  printf("  fld qword[constE]\n"); 
 }
 
 void bind_const(int number){
