@@ -11,11 +11,11 @@ void bind_sub(){
 }
 
 void bind_div(){
-  printf("  fdiv\n");
+  printf("  fdivp\n");
 }
 
 void bind_mul(){
-  printf("  fmul\n");
+  printf("  fmulp\n");
 }
 
 void bind_sin(){
@@ -28,6 +28,7 @@ void bind_cos(){
 
 void bind_tan(){
   printf("  fptan\n");
+  printf("  fmulp\n");
 }
 
 void bind_ctn(){

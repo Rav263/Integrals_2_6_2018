@@ -41,6 +41,8 @@ void bind_function(function *fun, int counter){
   printf("f%d:\n", counter);
   printf("  push ebp\n");
   printf("  mov ebp, esp\n");
+  printf("  finit\n");
+
 
   int const_offset = 0;
 
