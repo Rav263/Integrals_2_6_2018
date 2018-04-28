@@ -49,15 +49,13 @@ double root(double fun1(double), double fun2(double), double a, double b, double
 
     if(mod(now_x) < eps)return x;
     if(mod(b - a) < eps)return x;
-    printf("iterations: %d  %lf %lf %lf %lf %lf %lf\n",iterations, x, now_x, now_b, now_a, a, b); 
+    //printf("iterations: %d  %lf %lf %lf %lf %lf %lf\n",iterations, x, now_x, now_b, now_a, a, b); 
     
     if(now_a * now_x <= 0){
-     // printf("aa\n");
       b = x;
       continue;
     }
     if(now_b * now_x <= 0){
-      //printf("bb\n");
       a = x;
       continue;
     }
@@ -68,12 +66,7 @@ double root(double fun1(double), double fun2(double), double a, double b, double
 
 double integral(double fun(double), double a, double b, double eps){
   int n = 4;
-  
   double h = (b - a) / n;
-
-
-  printf("%lf %lf\n", fun(a), fun(b));
-
   double I0 = fun(a) + fun(b);
   double I2 = 0;
   double I4 = 0;
@@ -86,7 +79,6 @@ double integral(double fun(double), double a, double b, double eps){
   double I = I0 + 2 * I2 + 4 * I4;
 
   I *= h / 3;
-  printf("%lf %lf\n", I, h); 
 
   for(int j = 0;;j++){
     double N0 = I0;
@@ -105,63 +97,105 @@ double integral(double fun(double), double a, double b, double eps){
 
     double coof = (I - now) / 15;
 
-    printf("iteration: %d %lf %d %lf %lf\n", j, coof, n, now, I);
+    //printf("iteration: %d %lf %d %lf %lf\n", j, coof, n, now, I);
     if(mod(coof) < eps)return now;
     I0 = N0;
     I2 = N2;
     I4 = N4;
     I = now;
-
   }
+
   return I;
 }
 
-double some(double x){
-  return f3(x) - f2(x);
+
+double f1f2(double x){
+  return f1(x) - f2(x);
 }
+
+double f1f3(double x){
+  return f1(x) - f3(x);
+}
+
+double f2f3(double x){
+  return f2(x) - f3(x);
+}
+
+
+
 
 int main(int argc, char **args){
   int flag = 0;
-  if(argc == 2){
+  if(argc >= 2){
     flag = process_flags(args[1]);
+    int flg = 0;
+    if(argc >= 3){
+      flg = process_flags(args[2]);
+      if(flg == -1)return 0;
+    }
     if(flag == -1)return 0;
+    if(flg != flag && !(flg == 0 || flag == 0))flag = 3;
   }
 
   double a = get_a();
   double b = get_b();
 
-  printf("%lf %lf\n", a, b);
-  printf("f1: %lf %lf\n", f1(a), f1(b));
-  printf("f1 - f2: %lf, %lf\n", ras_fun(f1, f2, a), ras_fun(f1, f2, b));
 
-  //double c = root(f1, f2, a, b, 0.00001);
   iterations = 0;
-  // double d = root(f2, f3, a, b, 0.00001);
+  double x1 = root(f1, f2, a, b, 0.0001);
+  if(flag == 2 || flag == 3)printf("Iterations of root search f1 = f2: %d\n", iterations);
+
+  iterations = 0;
+  double x2 = root(f1, f3, a, b, 0.0001);
+  if(flag == 2 || flag == 3)printf("Iterations of root search f1 = f3: %d\n", iterations);
   
-  double e = integral(f1, a, b, 0.00001);
-  
-  printf("%lf\n", e);
-
-  //printf("%lf %lf %lf\n", c, 0.2, e);
-
- 
-
-  /*for(;;){
-
-    double c;
-    scanf("%lf", &c);
-
-    double d = f1(c);
-    double e = f2(c);
-    double f = ras_fun(f1, f2, c);
-
-    printf("%lf %lf %lf\n", d, e, f);
-  }*/
+  iterations = 0;
+  double x3 = root(f2, f3, a, b, 0.0001);
+  if(flag == 2 || flag == 3)printf("Iterations of root search f2 = f3: %d\n", iterations);
 
 
-  //if(a * b < 0)printf("NORMAL %lf\n", a * b);
-  //else printf("WTF: %lf\n", a * b);
+  if(flag == 1 || flag == 3)
+    printf("The abcissies of roots\n  f1 = f2: %lf\n  f1 = f3: %lf\n  f2 = f3: %lf\n", x1, x2, x3);
 
+  double res = 0;
+
+  if(x1 < x2 && x2 < x3){
+    double fir = mod(integral(f1f2, x1, x2, 0.0001));
+    double sec = mod(integral(f2f3, x2, x3, 0.0001));
+    res = fir + sec;
+  }
+
+  if(x2 < x1 && x1 < x3){
+    double fir = mod(integral(f1f3, x2, x1, 0.0001));
+    double sec = mod(integral(f2f3, x1, x3, 0.0001));
+    res = fir + sec;
+  }
+
+  if(x3 < x1 && x1 < x2){
+    double fir = mod(integral(f2f3, x3, x1, 0.0001));
+    double sec = mod(integral(f1f3, x1, x2, 0.0001));
+    res = fir + sec;
+  }
+
+  if(x3 < x2 && x2 < x1){
+    double fir = mod(integral(f2f3, x3, x2, 0.0001));
+    double sec = mod(integral(f1f3, x2, x1, 0.0001));
+    res = fir + sec;
+  }
+
+  if(x1 < x3 && x3 < x2){
+    double fir = mod(integral(f1f2, x1, x3, 0.0001));
+    double sec = mod(integral(f1f3, x3, x2, 0.0001));
+    res = fir + sec;
+  }
+
+  if(x2 < x3 && x3 < x1){
+    double fir = mod(integral(f1f3, x2, x3, 0.0001));
+    double sec = mod(integral(f1f2, x3, x1, 0.0001));
+    res = fir + sec;
+  }
+
+  printf("The square of figure: %lf\n", res);
   
   return 0;
 }
