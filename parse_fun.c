@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct mem{
+typedef struct mem{  //структура для хранения логического элемента функции
   double num;
   int type;
 } mem;
@@ -41,17 +41,17 @@ void read_fun(FILE *file, mem *fun){
     char now = str[i];
     if(now == ' ')continue;
 
-    if(now >= '0' && now <= '9'){
+    if(now >= '0' && now <= '9'){ //Если текущая часть функции число
       double num;
-      sscanf(str + i, "%lf", &num);
+      sscanf(str + i, "%lf", &num); //Считать его из строки
 
-      fun[index].num  = num;
+      fun[index].num  = num; //Добавитьь логический элемент
       fun[index].type = 0;
 
       index++;
     }
 
-    if(now == 'c'){
+    if(now == 'c'){ // если ctg или cos 
       if(str[i + 1] == 't')fun[index].type = 8;
       else if(str[i + 1] == 'o')fun[index].type = 9;
       else continue;
@@ -59,7 +59,7 @@ void read_fun(FILE *file, mem *fun){
       index++;
     }
 
-    int type = parse_sym(now);
+    int type = parse_sym(now); //ЕСли всё остальное
     if(type != -1){
       fun[index].type = type;
       fun[index].num  = 0;
@@ -76,7 +76,7 @@ void read_fun(FILE *file, mem *fun){
   fun[index].num = -1;
 }
 
-
+//Чтение функций и разбор их из файла
 void read_file(FILE *file, mem *f1, mem *f2, mem *f3, double *a, double *b){
   fscanf(file, "%lf %lf", a, b);
   char c;
@@ -88,12 +88,12 @@ void read_file(FILE *file, mem *f1, mem *f2, mem *f3, double *a, double *b){
 }
 
 
+
+//Печать функции
 void print_fun(mem *fun){
   for(int i = 0; fun[i].type != -1; i++){
     printf("(%d;%lf) ", fun[i].type, fun[i].num);
   }
   printf("\n");
 }
-
-
 
