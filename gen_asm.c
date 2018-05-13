@@ -26,7 +26,7 @@ void bind_fun_data(function *f1, int *offset){  //Функиця забивае�
 void bind_section_data(function *f1, function *f2, function *f3, double a, double b){ //функция пишущая секцию дата
   int counter = 2;
 
-  printf("section .data\n");
+  printf("section .rodata\n");
   printf("  const0 dq %f\n", a); //шраницы отрезков
   printf("  const1 dq %f\n", b);
   printf("  constE dq 2.718281825\n"); //число exp

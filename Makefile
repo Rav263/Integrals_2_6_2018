@@ -5,7 +5,7 @@ ADDITIONALFLG=-c
 all: main
 
 main: asm 
-	${CXX} ${CXXFLAGS} functions.o  main.c -o main -m32
+	${CXX} ${CXXFLAGS} functions.o  main.c -o main -m32 -lm
 	rm functions.o
 
 asm: gen_asm
