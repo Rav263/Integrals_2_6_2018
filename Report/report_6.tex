@@ -232,7 +232,7 @@
     \item {\bf \ttfamily double zero\_fun()} функция тождественно равная нулю.
   \end{itemize}
   
-  \item Второй модуль автомотически генерируется первой программой на си. Он реализует данные функции на ассемблере, соответственно:
+  \item Второй модуль автоматически генерируется первой программой на си. Он реализует данные функции на ассемблере, соответственно:
   \begin{itemize}
     \item {\bf \ttfamily double f1(double x)} вычисляет f1 в точке x.
     \item {\bf \ttfamily double f2(double x)} вычисляет f2 в точке x.
@@ -242,6 +242,31 @@
   \end{itemize}
 \end{enumerate}
 
+\begin{tikzpicture}[thick,
+                    node distance=4cm,
+                    text height=1.5ex]
+
+  \tikzstyle{format} = [thick, minimum size=1cm, draw=black!50!black!50]
+  \node[format] (main) {main.c};
+  \node[format,right of=main] (funct) {functions.asm};
+
+  \path[->] (main) edge (funct);
+\end{tikzpicture}
+
+
+\begin{tikzpicture}[thick,
+                    node distance=4cm,
+                    text height=1.5ex]
+
+  \tikzstyle{format} = [thick, minimum size=1cm, draw=black!50!black!50]
+  \node[format] (genasm) {gen\_asm.c};
+  \node[format,right of=genasm] (bindcom) {bind\_commands.c};
+  \node[format,left of=genasm] (parsefun) {parse\_fun.c};
+
+  \path[->] (genasm) edge (bindcom);
+  \path[->] (genasm) edge (parsefun);
+\end{tikzpicture}
+
 \newpage
 
 \section{Сборка программы (Make-файл)}
@@ -250,33 +275,46 @@
 и привести текст Make-файла. Зависимости проще всего описать диаграммой.
 
 {\ttfamily
-CXX=gcc
-CXXFLAGS=-std=c99 -O2
+\noindent
+CXX=gcc 
+\newline
+CXXFLAGS=-std=c99 -O2 
+\newline
 ADDITIONALFLG=-c
-
+\newline
 all: main
-
+\newline
 main: asm 
-	${CXX} ${CXXFLAGS} functions.o  main.c -o main -m32 -lm
-	rm functions.o
+	
+  \$\{CXX\} \$\{CXXFLAGS\} functions.o  main.c -o main -m32 -lm
+	
+  rm functions.o
+\newline
+asm: gen\_asm
 
-asm: gen_asm
-	./gen_asm ${SPEC_FILE} > functions.asm
-	nasm -f elf32 functions.asm -o functions.o -D UNIX
-	rm gen_asm
+  ./gen\_asm \$\{SPEC\_FILE\} > functions.asm
 
-gen_asm: gen_asm.c ${SPEC_FILE} parse_fun bind_commands
-	${CXX} ${CXXFLAGS} gen_asm.c parse_fun.o bind_commands.o -o gen_asm
-	rm parse_fun.o bind_commands.o
-
-parse_fun: parse_fun.c parse_fun.h
-	${CXX} ${CXXFLAGS} ${ADDITIONALFLG} parse_fun.c 
-
-bind_commands: bind_commands.c bind_commands.h
-	${CXX} ${CXXFLAGS} ${ADDITIONALFLG} bind_commands.c
-
+  nasm -f elf32 functions.asm -o functions.o -D UNIX
+  
+  rm gen\_asm
+\newline
+gen\_asm: gen\_asm.c \$\{SPEC\_FILE\} parse\_fun bind\_commands
+	
+  \$\{CXX\} \$\{CXXFLAGS\} gen\_asm.c parse\_fun.o bind\_commands.o -o gen\_asm
+	
+  rm parse\_fun.o bind\_commands.o
+\newline
+parse\_fun: parse\_fun.c parse\_fun.h
+	
+  \$\{CXX\} \$\{CXXFLAGS\} \$\{ADDITIONALFLG\} parse\_fun.c 
+\newline
+bind\_commands: bind\_commands.c bind\_commands.h
+	
+  \$\{CXX\} \$\{CXXFLAGS\} \$\{ADDITIONALFLG\} bind\_commands.c
+\newline
 clean: 
-	rm functions.asm main 
+
+  rm functions.asm main 
 }
 \newpage
 
