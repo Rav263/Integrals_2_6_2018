@@ -9,6 +9,7 @@
 \usepackage{multirow}
 \usepackage{fontspec}
 \usepackage{tikz}  
+\usepackage{fancyvrb}
 \usetikzlibrary{positioning,arrows}
 % выбираем размер листа А4, все поля ставим по 3см
 \geometry{a4paper,left=30mm,top=30mm,bottom=30mm,right=30mm}
@@ -30,7 +31,7 @@
 	Факультет вычислительной математики и кибернетики\\}
 	\vfill
 	{\Large \sc Отчет по заданию №6}\\
-	~\\
+  ~\\
 	{\large \bf <<Сборка многомодульных программ. \\
 	Вычисление корней уравнений и определенных интегралов.>>}\\ 
 	~\\
@@ -62,9 +63,14 @@
 
 \section{Математическое обоснование}
 
-В данном разделе проводится анализ заданного набора кривых, приводятся их графики (рис.~\ref{plot1}),
-обоснование выбора значений $\varepsilon_1$ и $\varepsilon_2$, а также отрезков для поиска точек
-пересечения кривых.
+Для тестирования программы был взят набор следующих функций(рис.~\ref{plot1}):
+\begin{itemize}
+  \item {$2-\tan{\frac{x}{4}}$}
+  \item {$x$}
+  \item {$\pi*0.2$}
+\end{itemize}
+
+обоснование выбора значений $\varepsilon_1$ и $\varepsilon_2$, а
 
 В обосновании необходимо указать требования на сходимость методов и оценки точности со ссылкой на
 литературу, которая оформляется так~\cite{math}. Для выбора отрезков поиска корней и значений $\varepsilon_1$ и $\varepsilon_2$ необходимо
@@ -75,7 +81,7 @@
 \begin{tikzpicture}
 \begin{axis}[% grid=both,                % рисуем координатную сетку (если нужно)
              axis lines=middle,          % рисуем оси координат в привычном для математики месте
-             restrict x to domain=-2:4,  % задаем диапазон значений переменной x
+             restrict x to domain=0:4,   % задаем диапазон значений переменной x
              restrict y to domain=-1:6,  % задаем диапазон значений функции y(x)
              axis equal,                 % требуем соблюдения пропорций по осям x и y
              enlargelimits,              % разрешаем при необходимости увеличивать диапазоны переменных
@@ -84,23 +90,23 @@
 
 % первая функция
 % параметр samples отвечает за качество прорисовки
-\addplot[green,samples=256,thick] {3/((x-1)^2+1)};
+  \addplot[green,samples=256,thick] {2-tan(deg(x/4))};
 % описание первой функции
-\addlegendentry{$y=\frac{3}{(x-1)^2+1}$}
+  \addlegendentry{$y=2-\tan{\frac{x}{4}}$}
 
 % добавим немного пустого места между описанием первой и второй функций
 \addlegendimage{empty legend}\addlegendentry{}
 
 % вторая функция
 % здесь необходимо дополнительно ограничить диапазон значений переменной x
-\addplot[blue,domain=-0.5:4,samples=256,thick] {sqrt(x+0.5)};
-\addlegendentry{$y=\sqrt{x+0.5}$}
+\addplot[blue,samples=256,thick] {x};
+\addlegendentry{$y=x$}
 
 % дополнительное пустое место не требуется, так как формулы имеют небольшой размер по высоте
 
 % третья функция
-\addplot[red,samples=256,thick] {exp(-x)};
-\addlegendentry{$y=e^{-x}$}
+\addplot[red,samples=256,thick] {pi*0.2};
+\addlegendentry{$y=\pi*0.2$}
 \end{axis}
 \end{tikzpicture}
 \caption{Плоская фигура, ограниченная графиками заданных уравнений}
@@ -177,13 +183,13 @@
 
 % Поскольку автоматическое вычисление точек пересечения кривых в TiKZ реализовать сложно,
 % будем явно задавать координаты.
-\addplot[dashed] coordinates { (-0.2033, 1.2254) (-0.2033, 0) };
+\addplot[dashed] coordinates {(-0.2033, 1.2254) (-0.2033, 0)};
 \addplot[color=black] coordinates {(-0.2033, 0)} node [label={-135:{\small -0.2033}}]{};
 
-\addplot[dashed] coordinates { (0.1874, 0.8291) (0.1874, 0) };
+\addplot[dashed] coordinates {(0.1874, 0.8291) (0.1874, 0)};
 \addplot[color=black] coordinates {(0.1874, 0)} node [label={-45:{\small 0.1874}}]{};
 
-\addplot[dashed] coordinates { (1.9561, 1.5672) (1.9561, 0) };
+\addplot[dashed] coordinates {(1.9561, 1.5672) (1.9561, 0)};
 \addplot[color=black] coordinates {(1.9561, 0)} node [label={-90:{\small 1.9561}}]{};
 
 \end{axis}
@@ -200,8 +206,8 @@
 \begin{enumerate}
   \item Первый главный модуль этой программы состоит из функций:
   \begin{itemize}
-    \item {\bf \ttfamily void bind\_fun\_data(function *f1, int *offest)} функция пишет в ассемблерный файл в секцию .rodata константы, которые использует функция.
-    \item {\bf \ttfamily void bind\_section\_data(function *f1, function *f2, \newline function *f3, double a, double b)} оболочка для предыдущей функции, которая использует её для записи в файл констант всех функций, так же она пишет в секцию .rodata границы отрезка и константу e.
+    \item {\bf \ttfamily void bind\_fun\_data(function *f1, int *offest)} функция пишет в ассемблерный файл в секцию rodata константы, которые использует функция.
+    \item {\bf \ttfamily void bind\_section\_data(function *f1, function *f2, \newline function *f3, double a, double b)} оболочка для предыдущей функции, которая использует её для записи в файл констант всех функций, так же она пишет в секцию rodata границы отрезка и константу e.
     \item {\bf \ttfamily void bind\_function(function *fun, int counter)} функция пишет в ассемблерный файл функцию, поданную ей в качестве аргумента ввиде масива структур.
   \end{itemize}
 
@@ -224,7 +230,7 @@
     \item {\bf \ttfamily int process\_flags(char *flg)} функция занимающаяся парсингом флагов поданных программе на вход.
     \item {\bf \ttfamily double ras\_fun(doube fun1(double), double fun2(double),\newline double now)} функция считает разность значений функций поданных на вход.
     \item {\bf \ttfamily double mod(double a)} функция считающая модуль вещественного числа.
-    \item {\bf \ttfamily double root(double fun1(double), double fun2(double),\newline double a, double b, double eps)} функция для поиска корней уравнения {\bf \ttfamily fun1 = fun2} на отрезке [a, b] c точностью eps c помощью метода \"вилки\"
+    \item {\bf \ttfamily double root(double fun1(double), double fun2(double),\newline double a, double b, double eps)} функция для поиска корней уравнения {\bf \ttfamily fun1 = fun2} на отрезке [a, b] c точностью eps c помощью метода вилки
     \item {\bf \ttfamily integral(double fun(double), double a, double b, double eps)} функция считающая интеграл от поданной на вход функции на заданном отрезке [a, b] с точностью eps.
     \item {\bf \ttfamily double f1f2(double x)} функция считающая разность функций f1 и f2 в точке x.
     \item {\bf \ttfamily double f1f3(double x)} функция считающая разность функций f1 и f3 в точке x.
@@ -274,66 +280,105 @@
 В данном разделе необходимо описать зависимости между модулями программы
 и привести текст Make-файла. Зависимости проще всего описать диаграммой.
 
-{\ttfamily
-\noindent
-CXX=gcc 
-\newline
-CXXFLAGS=-std=c99 -O2 
-\newline
+\begin{Verbatim}
+CXX=gcc
+CXXFLAGS=-std=c99 -O2
 ADDITIONALFLG=-c
-\newline
+
 all: main
-\newline
-main: asm 
-	
-  \$\{CXX\} \$\{CXXFLAGS\} functions.o  main.c -o main -m32 -lm
-	
-  rm functions.o
-\newline
-asm: gen\_asm
 
-  ./gen\_asm \$\{SPEC\_FILE\} > functions.asm
+main: asm functions.o main.c
+	${CXX} ${CXXFLAGS} functions.o  main.c -o main -m32 -lm
 
-  nasm -f elf32 functions.asm -o functions.o -D UNIX
-  
-  rm gen\_asm
-\newline
-gen\_asm: gen\_asm.c \$\{SPEC\_FILE\} parse\_fun bind\_commands
-	
-  \$\{CXX\} \$\{CXXFLAGS\} gen\_asm.c parse\_fun.o bind\_commands.o -o gen\_asm
-	
-  rm parse\_fun.o bind\_commands.o
-\newline
-parse\_fun: parse\_fun.c parse\_fun.h
-	
-  \$\{CXX\} \$\{CXXFLAGS\} \$\{ADDITIONALFLG\} parse\_fun.c 
-\newline
-bind\_commands: bind\_commands.c bind\_commands.h
-	
-  \$\{CXX\} \$\{CXXFLAGS\} \$\{ADDITIONALFLG\} bind\_commands.c
-\newline
+asm: gen_asm ${SPEC_FILE}
+	./gen_asm ${SPEC_FILE} > functions.asm
+	nasm -f elf32 functions.asm -o functions.o -D UNIX
+
+gen_asm: gen_asm.c parse_fun.o bind_commands.o
+	${CXX} ${CXXFLAGS} gen_asm.c parse_fun.o bind_commands.o -o gen_asm
+
+parse_fun.o: parse_fun.c parse_fun.h
+	${CXX} ${CXXFLAGS} ${ADDITIONALFLG} parse_fun.c 
+
+bind_commands.o: bind_commands.c bind_commands.h
+	${CXX} ${CXXFLAGS} ${ADDITIONALFLG} bind_commands.c
+
 clean: 
+	rm functions.asm main gen_asm *.o
+\end{Verbatim}
 
-  rm functions.asm main 
-}
+
+\begin{tikzpicture}[thick,
+                    node distance=4cm,
+                    text height=1.5ex]
+
+  \tikzstyle{format} = [thick, minimum size=1cm, draw=black!50!black!50]
+  \node[format] (main) {main};
+  \node[format,right of=main] (asm) {asm};
+  \node[format,right of=asm] (genasm) {gen\_asm};
+  \node[format,right of=genasm] (parsefun) {parse\_fun.o};
+  \node[format,below of=parsefun] (bindcom) {bind\_commands.o};
+  \node[format,below of=main] (clean) {clean};
+  \node[format,below of=asm] (specfile) {SPEC\_FILE};
+
+  \path[->] (genasm) edge (bindcom);
+  \path[->] (genasm) edge (parsefun);
+  \path[->] (main) edge (asm);
+  \path[->] (asm) edge (genasm);
+  \path[->] (asm) edge (specfile);
+\end{tikzpicture}
+
 \newpage
 
 \section{Отладка программы, тестирование функций}
+Тестирование программы производилось с помощью специально реальзованных флагов {\ttfamily -testRoot -testIntegral} для тестирования функции вычисления корней и интрегралов соответственно. Для каждого флага программа компилоровалась со специальным значением {\ttfamily SPEC\_FILE}, в котором для тестирования каждой из функций были свои функции. Проверка правильности вычисления корней и интегралов проводилась при помощи аналитического вычисления и дополнительной проверки с помолью Wolfram alpha.
 
-В данном разделе необходимо изложить, как именно производилось тестирование
-и отладка численных методов. Тестирование предполагает наличие как минимум
-трех тестов на каждый из реализованных методов, удовлетворяющих следующим
-условиям.
+\noindent Для тестировария функции корней использовались следующие функции:
 \begin{enumerate}
-\item Для данных тестов должно быть возможно аналитически посчитать ответ,
-\item Среди тестов должно быть не более одного <<тривиального>> теста
-    с точки зрения применяемого метода, то есть такого теста, где порядок
-    кривой совпадает с порядком кривой используемой методом для аппроксимации.
+  \item {$x+2=0$} результаты тестирования для данной функции на отрезке [0, 4]:
+  \begin{itemize}
+    \item Результат программы: 2.00000
+    \item Результат аналитических вычислений: 2
+    \item Результат Wolfram alpha: 2.0000
+  \end{itemize}
+  \item {$(x-3)^2=0$} результаты тестирования для данной функции на отрезке [0, 4]:
+  \begin{itemize}
+    \item Результат программы: 1.732100
+    \item Результат аналитических вычислений: {$\sqrt{3}$}
+    \item Результат Wolfram alpha: 1.7321
+  \end{itemize}
+\item {$x^4+x^2-4$} результаты тестирования для данной функции на отрезке [0, 4]:
+  \begin{itemize}
+    \item Результат программы: 1.249600
+    \item Результат аналитических вычислений: {$\sqrt{\frac{\sqrt{17}}{2}-\frac{1}{2}}$}
+    \item Результат Wolfram alpha: 1.2496
+  \end{itemize}
+\end{enumerate}
+Таким образом результаты тестирования функции исчисления корней совпадают с аналитичискими вычислениями.
+\newpage
+\noindent Для тестирования функции интегралов использовались следующие функции:
+\begin{enumerate}
+  \item {$x^2+2$} результаты тестирования для данной функции на отрезке [0, 4]:
+  \begin{itemize}
+    \item Результат программы: 29.333300
+    \item Результат аналитических вычислений: {$\int_0^4 \!(x^2+2)\, \mathrm{d}x=\frac{4^3}{3}+2*4=29\frac{1}{3}$}
+    \item Результат Wolfram alpha: 29.3333
+  \end{itemize}
+  \item {$x^3$} результаты тестирования для данной функции на отрезке [0, 4]:
+  \begin{itemize}
+    \item Результат программы: 64.00000
+    \item Результат аналитических вычислений: {$\int_0^4\!x^3\,\mathrm{d}x=64$}
+    \item Результат Wolfram alpha: 64
+  \end{itemize}
+\item {$\sin(x)+1$} результаты тестирования для данной функции на отрезке [0, 4]:
+  \begin{itemize}
+    \item Результат программы: 5.653700
+    \item Результат аналитических вычислений: {$\int_0^4\!\sin(x)+1\,\mathrm{d}x=4-\cos(4)+\cos(0)=5.6536$}
+    \item Результат Wolfram alpha: 5.6536
+  \end{itemize}
 \end{enumerate}
 
-Для каждого теста необходимо привести уравнения кривых и нужных производных,
-аналитическое вычисление корней и отрезков применения методов, результаты
-работы численных методов.
+Таким образом результаты тестирования функции исчисления интегралов совпадают с аналитическими вычислениями.
 
 \newpage
 
