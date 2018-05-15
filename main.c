@@ -56,7 +56,7 @@ double root(double fun1(double), double fun2(double), double a, double b, double
     double now_b = ras_fun(fun1, fun2, b);
     double now_x = ras_fun(fun1, fun2, x);
 
-    if(mod(now_x) < eps)return round(x / eps) * eps; //Если x корень
+    //if(mod(now_x) < eps)return round(x / eps) * eps; //Если x корень
     if(mod(b - a) < eps)return round(x / eps) * eps; //Если отрезок стал достаточно малым
     //printf("iterations: %d  %lf %lf %lf %lf %lf %lf\n",iterations, x, now_x, now_b, now_a, a, b); 
     
@@ -150,6 +150,8 @@ int main(int argc, char **args){
   double eps;
   printf("Please, enter the eps: ");
   scanf("%lf", &eps);
+  double eps1 = eps/100;
+  double eps2 = eps/10;
 
   // Получение границ отрезка
   double a = get_a();
@@ -157,25 +159,25 @@ int main(int argc, char **args){
 
   if(flag == 4){
     iterations = 0;
-    double x1 = root(f1, zero_fun, a, b, eps);
+    double x1 = root(f1, zero_fun, a, b, eps1);
     printf("f1: Iterations: %d, root: %lf\n", iterations, x1);
 
     iterations = 0;
-    double x2 = root(f2, zero_fun, a, b, eps);
+    double x2 = root(f2, zero_fun, a, b, eps1);
     printf("f2: Iterations: %d, root: %lf\n", iterations, x2);
 
     iterations = 0;
-    double x3 = root(f3, zero_fun, a, b, eps);
+    double x3 = root(f3, zero_fun, a, b, eps1);
     printf("f3: Iterations: %d, root: %lf\n", iterations, x3);
     return 0;
   }
 
   if(flag == 5){
-    double I1 = integral(f1, a, b, eps);
+    double I1 = integral(f1, a, b, eps2);
     printf("f1: %lf\n", I1);
-    double I2 = integral(f2, a, b, eps);
+    double I2 = integral(f2, a, b, eps2);
     printf("f2: %lf\n", I2);
-    double I3 = integral(f3, a, b, eps);
+    double I3 = integral(f3, a, b, eps2);
     printf("f3: %lf\n", I3);
     return 0;
   }
@@ -184,20 +186,20 @@ int main(int argc, char **args){
 
   // Вычисления точек пересечения трёх функций
   iterations = 0;
-  double x1 = root(f1, f2, a, b, eps);
+  double x1 = root(f1, f2, a, b, eps1);
   if(flag == 2 || flag == 3)printf("Iterations of root search f1 = f2: %d\n", iterations);
 
   iterations = 0;
-  double x2 = root(f1, f3, a, b, eps);
+  double x2 = root(f1, f3, a, b, eps1);
   if(flag == 2 || flag == 3)printf("Iterations of root search f1 = f3: %d\n", iterations);
   
   iterations = 0;
-  double x3 = root(f2, f3, a, b, eps);
+  double x3 = root(f2, f3, a, b, eps1);
   if(flag == 2 || flag == 3)printf("Iterations of root search f2 = f3: %d\n", iterations);
 
 
   if(flag == 1 || flag == 3)
-    printf("The abcissies of roots\n  f1 = f2: %lf\n  f1 = f3: %lf\n  f2 = f3: %lf\n", x1, x2, x3);
+    printf("The abcissies and ordinates of roots\n  f1 = f2: %lf %lf\n  f1 = f3: %lf %lf\n  f2 = f3: %lf %lf\n", x1, f1(x1), x2, f1(x2), x3, f2(x3));
 
 
 
@@ -206,38 +208,38 @@ int main(int argc, char **args){
   double res = 0;
 
   if(x1 < x2 && x2 < x3){
-    double fir = mod(integral(f1f2, x1, x2, eps));
-    double sec = mod(integral(f2f3, x2, x3, eps));
+    double fir = mod(integral(f1f2, x1, x2, eps2));
+    double sec = mod(integral(f2f3, x2, x3, eps2));
     res = fir + sec;
   }
 
   if(x2 < x1 && x1 < x3){
-    double fir = mod(integral(f1f3, x2, x1, eps));
-    double sec = mod(integral(f2f3, x1, x3, eps));
+    double fir = mod(integral(f1f3, x2, x1, eps2));
+    double sec = mod(integral(f2f3, x1, x3, eps2));
     res = fir + sec;
   }
 
   if(x3 < x1 && x1 < x2){
-    double fir = mod(integral(f2f3, x3, x1, eps));
-    double sec = mod(integral(f1f3, x1, x2, eps));
+    double fir = mod(integral(f2f3, x3, x1, eps2));
+    double sec = mod(integral(f1f3, x1, x2, eps2));
     res = fir + sec;
   }
 
   if(x3 < x2 && x2 < x1){
-    double fir = mod(integral(f2f3, x3, x2, eps));
-    double sec = mod(integral(f1f3, x2, x1, eps));
+    double fir = mod(integral(f2f3, x3, x2, eps2));
+    double sec = mod(integral(f1f3, x2, x1, eps2));
     res = fir + sec;
   }
 
   if(x1 < x3 && x3 < x2){
-    double fir = mod(integral(f1f2, x1, x3, eps));
-    double sec = mod(integral(f1f3, x3, x2, eps));
+    double fir = mod(integral(f1f2, x1, x3, eps2));
+    double sec = mod(integral(f1f3, x3, x2, eps2));
     res = fir + sec;
   }
 
   if(x2 < x3 && x3 < x1){
-    double fir = mod(integral(f1f3, x2, x3, eps));
-    double sec = mod(integral(f1f2, x3, x1, eps));
+    double fir = mod(integral(f1f3, x2, x3, eps2));
+    double sec = mod(integral(f1f2, x3, x1, eps2));
     res = fir + sec;
   }
 
